@@ -15,7 +15,8 @@ const locationTemplate = document.querySelector("#location-template").innerHTML;
 // Get data from server
 socket.on("message", (msg) => {
   const html = Mustache.render(messageTemplate, {
-    message: msg,
+    message: msg.text,
+    createdAt: moment(msg.createdAt).format("h:mm a"),
   });
   messages.insertAdjacentHTML("beforeend", html);
 });
@@ -23,6 +24,7 @@ socket.on("message", (msg) => {
 socket.on("location", (url) => {
   const html = Mustache.render(locationTemplate, {
     url,
+    createdAt: moment(url.createdAt).format("h:mm a"),
   });
   messages.insertAdjacentHTML("beforeend", html);
 });
