@@ -5,27 +5,49 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chat Now - A real time chat app</title>
+
+    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="icon" href="./img/favicon.png" />
     <script defer src="/socket.io/socket.io.js"></script>
     <script defer src="./js/chat.js"></script>
   </head>
 
   <body>
-    <h1>Chat App</h1>
-    <div id="messages"></div>
-    <form id="message-form">
-      <input class="message-input" type="text" placeholder="Send Message..." />
-      <button id="message-btn">Send</button>
-    </form>
-    <button id="send-location">Send Location</button>
+    <div class="chat">
+      <div class="chat__sidebar" id="sidebar"></div>
+      <div class="chat__main">
+        <div class="chat__messages" id="messages"></div>
+        <div class="compose">
+          <form id="message-form">
+            <input
+              class="message-input"
+              type="text"
+              placeholder="message..."
+              autocomplete="off"
+            />
+            <button id="message-btn">Send</button>
+          </form>
+          <button id="send-location">Send Location</button>
+        </div>
+      </div>
+    </div>
 
     <script id="message-template" type="text/html">
-      <div>
-        <p>{{createdAt}} - {{message}}</p>
+      <div class="message">
+        <p>
+          <span class="message__name">name</span>
+          <span class="message__meta">{{createdAt}}</span>
+        </p>
+        <p>{{message}}</p>
       </div>
     </script>
 
     <script id="location-template" type="text/html">
       <div>
+        <p>
+          <span class="message__name">name</span>
+          <span class="message__meta">{{createdAt}}</span>
+        </p>
         <p>
           {{createdAt}} -
           <a href="{{url}}" target="_blank">My current location</a>
