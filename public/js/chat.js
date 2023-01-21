@@ -8,10 +8,23 @@ const messageForm = document.querySelector("#message-form");
 const messageFormInput = document.querySelector(".message-input");
 const messageFormBtn = document.querySelector("#message-btn");
 const sendLocationBtn = document.querySelector("#send-location");
+const messages = document.querySelector("#messages");
+const messageTemplate = document.querySelector("#message-template").innerHTML;
+const locationTemplate = document.querySelector("#location-template").innerHTML;
 
 // Get data from server
 socket.on("message", (msg) => {
-  console.log(msg);
+  const html = Mustache.render(messageTemplate, {
+    message: msg,
+  });
+  messages.insertAdjacentHTML("beforeend", html);
+});
+
+socket.on("location", (url) => {
+  const html = Mustache.render(locationTemplate, {
+    url,
+  });
+  messages.insertAdjacentHTML("beforeend", html);
 });
 
 messageForm.addEventListener("submit", (e) => {
