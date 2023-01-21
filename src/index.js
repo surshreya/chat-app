@@ -18,6 +18,11 @@ io.on("connection", (socket) => {
     io.emit("message", msg); // Notify all the clients
   });
 
+  socket.on("sendLocation", (position) => {
+    const locationMsg = `https://www.google.com/maps/@${position.latitude},${position.longitude},12z`;
+    io.emit("message", locationMsg);
+  });
+
   socket.on("disconnect", () => {
     io.emit("message", "A user has left!");
   });
