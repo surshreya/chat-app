@@ -8,22 +8,18 @@ const io = socketio(server); // Support Web Sockets
 const port = process.env.PORT || 3000;
 
 // Set up Server side web socket connection
-let count = 0;
 io.on("connection", (socket) => {
-  console.log("New connection...");
-
   // Pass data from server to client
-  socket.emit("count", count);
-  socket.emit("message", "Welcome");
+  socket.emit("message", "Welcome to the chat app");
+  socket.broadcast.emit("message", "A new user has joined!"); //Broadcast to all other connected clients
 
   //Get data from client
-  socket.on("increment", () => {
-    count++;
-    io.emit("count", count); // Notify all the clients
+  socket.on("sendMessage", (msg) => {
+    io.emit("message", msg); // Notify all the clients
   });
 
-  socket.on("sendMessage", (msg) => {
-    io.emit("message", msg);
+  socket.on("disconnect", () => {
+    io.emit("message", "A user has left!");
   });
 });
 
