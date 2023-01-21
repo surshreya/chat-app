@@ -14,10 +14,6 @@ const port = process.env.PORT || 3000;
 
 // Set up Server side web socket connection
 io.on("connection", (socket) => {
-  // Pass data from server to client
-  socket.emit("message", generateMessage("Welcome to the chat app"));
-  socket.broadcast.emit("message", generateMessage("A new user has joined!")); //Broadcast to all other connected clients
-
   //Get data from client
   socket.on("sendMessage", (msg, callback) => {
     const filter = new Filter();
@@ -34,6 +30,16 @@ io.on("connection", (socket) => {
     const url = `https://www.google.com/maps/@${position.latitude},${position.longitude},12z`;
     io.emit("location", generateLocationMessage(url));
     callback();
+  });
+
+  socket.on("joinRoom", ({ username, room }) => {
+    socket.join(room);
+
+    // Pass data from server to client
+    socket.emit("message", generateMessage("Welcome to the chat app"));
+    socket.broadcast
+      .to(room)
+      .emit("message", generateMessage(`${username} has joined ${room} chat!`)); //Broadcast to all other connected clients
   });
 
   socket.on("disconnect", () => {

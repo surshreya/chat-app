@@ -1,16 +1,23 @@
-const body = document.querySelector("body");
 /**
  * Connect to the web socket from the client side
  */
 const socket = io();
 
+// Elements
+const body = document.querySelector("body");
 const messageForm = document.querySelector("#message-form");
 const messageFormInput = document.querySelector(".message-input");
 const messageFormBtn = document.querySelector("#message-btn");
 const sendLocationBtn = document.querySelector("#send-location");
 const messages = document.querySelector("#messages");
+
+// Templates
 const messageTemplate = document.querySelector("#message-template").innerHTML;
 const locationTemplate = document.querySelector("#location-template").innerHTML;
+
+const { username, room } = Qs.parse(location.search, {
+  ignoreQueryPrefix: true,
+});
 
 // Get data from server
 socket.on("message", (msg) => {
@@ -64,3 +71,5 @@ sendLocationBtn.addEventListener("click", () => {
     });
   });
 });
+
+socket.emit("joinRoom", { username, room });
