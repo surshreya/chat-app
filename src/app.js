@@ -38,7 +38,7 @@ io.on("connection", (socket) => {
     socket.join(user.room);
 
     // Pass data from server to client
-    socket.emit("message", generateMessage("Welcome to the chat app"));
+    socket.emit("message", generateMessage("Admin", "Welcome to the chat app"));
     socket.broadcast
       .to(user.room)
       .emit(
@@ -57,14 +57,17 @@ io.on("connection", (socket) => {
       return callback("Profanity not allowed.");
     }
 
-    io.to(user.room).emit("message", generateMessage(msg)); // Notify all the clients
+    io.to(user.room).emit("message", generateMessage(user.username, msg)); // Notify all the clients
     callback();
   });
 
   socket.on("sendLocation", (position, callback) => {
     const user = getUser(socket.id);
     const url = `https://www.google.com/maps/@${position.latitude},${position.longitude},12z`;
-    io.to(user.room).emit("location", generateLocationMessage(url));
+    io.to(user.room).emit(
+      "location",
+      generateLocationMessage(user.username, url)
+    );
     callback();
   });
 
@@ -74,7 +77,7 @@ io.on("connection", (socket) => {
     if (user) {
       io.to(user.room).emit(
         "message",
-        generateMessage(`${user.username} has left ${user.room}!`)
+        generateMessage("Admin", `${user.username} has left ${user.room}!`)
       );
     }
   });
