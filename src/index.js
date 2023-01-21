@@ -1,6 +1,7 @@
 const http = require("http");
 const chalk = require("chalk");
 const socketio = require("socket.io");
+const Filter = require("bad-words");
 const app = require("./app");
 
 const server = http.createServer(app);
@@ -14,13 +15,21 @@ io.on("connection", (socket) => {
   socket.broadcast.emit("message", "A new user has joined!"); //Broadcast to all other connected clients
 
   //Get data from client
-  socket.on("sendMessage", (msg) => {
+  socket.on("sendMessage", (msg, callback) => {
+    const filter = new Filter();
+
+    if (filter.isProfane(msg)) {
+      return callback("Profanity not allowed.");
+    }
+
     io.emit("message", msg); // Notify all the clients
+    callback();
   });
 
-  socket.on("sendLocation", (position) => {
+  socket.on("sendLocation", (position, callback) => {
     const locationMsg = `https://www.google.com/maps/@${position.latitude},${position.longitude},12z`;
     io.emit("message", locationMsg);
+    callback();
   });
 
   socket.on("disconnect", () => {
